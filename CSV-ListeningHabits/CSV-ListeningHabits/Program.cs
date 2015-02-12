@@ -11,16 +11,17 @@ namespace CSV_ListeningHabits
     {
         // Global List
         public static List<Play> musicDataList = new List<Play>();
+
+
         static void Main(string[] args)
         {
             // initalize dataset into list
             InitList();
 
-            //Console.WriteLine(MostPopularArtistByYear("2008"));
-
             // keep console open
             Console.ReadLine();
         }
+
         /// <summary>
         /// A function to initalize the List from the csv file
         /// needed for testing
@@ -28,6 +29,7 @@ namespace CSV_ListeningHabits
         public static void InitList()
         {
             // load data
+            //"using" creates a temporary variable (in this case "reader")
             using (StreamReader reader = new StreamReader("scrobbledata.csv"))
             {
                 // Get and don't use the first line
@@ -64,7 +66,12 @@ namespace CSV_ListeningHabits
         /// <returns>total plays in year</returns>
         public static int TotalPlaysByArtistNameInYear(string artistName, string year)
         {
-            return musicDataList.Where(x => x.Time.Year.ToString() == year).Count(x => x.Artist.ToLower() == artistName.ToLower());
+            //return musicDataList.Where(x => x.Time.Year.ToString() == year).Count(x => x.Artist.ToLower() == artistName.ToLower());
+            //OR
+            //return musicDataList.Where(x => x.Time.Year.ToString() == year && x.Artist.ToLower() == artistName.ToLower()).Count();
+            //OR
+            return musicDataList.Count(x => x.Artist.ToLower() == artistName.ToLower() && x.Time.Year.ToString() == year);
+
         }
         /// <summary>
         /// A function that returns the number of unique artists in the entire dataset
@@ -92,6 +99,7 @@ namespace CSV_ListeningHabits
         public static List<string> TrackListByArtist(string artistName)
         {
             return musicDataList.Where(x => x.Artist.ToLower() == artistName.ToLower()).Select(x => x.Title).Distinct().ToList();
+
         }
         /// <summary>
         /// A function that returns the first time an artist was ever played
@@ -110,9 +118,15 @@ namespace CSV_ListeningHabits
         /// <returns>most popular artist in year</returns>
         public static string MostPopularArtistByYear(string year)
         {
-            var result = musicDataList.Where(x => x.Time.Year.ToString() == year).GroupBy(y => y.Artist);
+            //var result = musicDataList.Where(x => x.Time.Year.ToString() == year).GroupBy(y => y.Artist);
             
-            return result.OrderByDescending(x => x.Count()).First().ToList().First().Artist;
+            //return result.OrderByDescending(x => x.Count()).First().ToList().First().Artist;
+            //OR
+            //return musicDataList.Where(x => x.Time.Year.ToString() == year).GroupBy(y => y.Artist).OrderByDescending(x => x.Count()).First().ToList().First().Artist;
+            //OR
+            return musicDataList.Where(x => x.Time.Year.ToString() == year).GroupBy(y => y.Artist).OrderByDescending(x => x.Count()).ToList().First().Key;
+
+
         }
         //uses GroupBy
 
